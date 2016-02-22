@@ -204,6 +204,7 @@ status "Bundling PHP ${PHP_VERSION}"
 
 # Install libraries also on build container, so PHP doesn't wayne about missing
 # dynamic libraries when running it during the slug compilation.
+fetch_package "libicu-51" /app/vendor/libicu > /dev/null
 fetch_package "libmcrypt-${mcrypt_version}" /app/vendor/libmcrypt > /dev/null
 
 fetch_engine_package php "$PHP_VERSION" "${VENDORED_PHP}" | indent
@@ -296,6 +297,7 @@ fi
 
 status "Vendoring binaries into slug"
 mv /app/vendor/libmcrypt vendor/libmcrypt
+mv /app/vendor/libicu vendor/libicu
 mv /app/vendor/nginx vendor/nginx
 mv /app/vendor/php vendor/php
 [ -d "/app/vendor/libmemcached" ] && mv /app/vendor/libmemcached vendor/libmemcached

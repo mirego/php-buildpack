@@ -56,8 +56,11 @@ if [ ! -d "/usr/include/freetype2/freetype" ] ; then
   cp /usr/include/freetype2/*.h /usr/include/freetype2/freetype
 fi
 
-mkdir -p "/app/vendor/php/zlib" "/app/vendor/libmcrypt" \
+mkdir -p "/app/vendor/php/zlib" "/app/vendor/libmcrypt" "/app/vendor/libicu" \
+&& curl "${SWIFT_URL}/package/libicu-51.tgz" | tar xzv -C /app/vendor/libicu \
 && curl "${SWIFT_URL}/package/libmcrypt-${mcrypt_version}.tgz" | tar xzv -C /app/vendor/libmcrypt \
+&& export LD_LIBRARY_PATH=/app/vendor/libicu/lib \
+&& export PATH=/app/vendor/libicu/bin:$PATH \
 && mkdir -p "/app/vendor/php/etc/conf.d" \
 && pushd zlib-${PHP_ZLIB_VERSION} >/dev/null && ./configure --prefix=/app/vendor/php/zlib && make && make install && popd > /dev/null \
 && pushd php-${php_version} >/dev/null \
@@ -79,6 +82,7 @@ mkdir -p "/app/vendor/php/zlib" "/app/vendor/libmcrypt" \
 --with-freetype-dir=/usr \
 --enable-exif \
 --with-zlib=/app/vendor/php/zlib \
+--with-icu-dir=/app/vendor/libicu \
 --with-bz2 \
 --with-openssl \
 --enable-soap \
